@@ -1,0 +1,13 @@
+# Wird von der Component-Application gesetzt (app-of-apps Chart).
+env: ''
+component: ''
+
+baseDomain: k8s.doerries.dev
+image: nginx:1.29-alpine
+replicas: 1
+
+# Inhalt der statischen Seite, kommt aus environments/<env>/components/<component>.yaml.
+page:
+  title: 'unbenannt'
+  color: '#2563eb'
+  text: ''

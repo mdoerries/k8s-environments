@@ -1,0 +1,45 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: envs
+  namespace: argocd
+spec:
+  goTemplate: true
+  goTemplateOptions: ['missingkey=error']
+  generators:
+    - git:
+        repoURL: https://github.com/mdoerries/k8s-environments.git
+        revision: main
+        files:
+          - path: 'environments/*/env.yaml'
+  template:
+    metadata:
+      name: '{{ .name }}'
+      labels:
+        gitops/env: '{{ .name }}'
+      annotations:
+        gitops/creator: '{{ .creator }}'
+        gitops/purpose: '{{ .purpose }}'
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io/foreground
+    spec:
+      project: bootstrap
+      sources:
+        - repoURL: https://github.com/mdoerries/k8s-environments.git
+          targetRevision: main
+          path: bootstrap/app-of-apps
+          helm:
+            valueFiles:
+              - $values/environments/{{ .name }}/env.yaml
+        - repoURL: https://github.com/mdoerries/k8s-environments.git
+          targetRevision: main
+          ref: values
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: argocd
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+  syncPolicy:
+    preserveResourcesOnDeletion: false

@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: bootstrap
+  namespace: argocd
+spec:
+  description: Nur Env-Apps (App-of-Apps). Sonst nichts.
+  sourceRepos:
+    - https://github.com/mdoerries/k8s-environments.git
+  destinations:
+    - server: https://kubernetes.default.svc
+      namespace: argocd
+  namespaceResourceWhitelist:
+    - group: argoproj.io
+      kind: Application
+    - group: argoproj.io
+      kind: AppProject

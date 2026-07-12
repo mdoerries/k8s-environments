@@ -1,0 +1,24 @@
+{{- if not .Values.name }}{{ fail "values.name muss gesetzt sein (kommt aus env.yaml)" }}{{- end }}
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: env-{{ .Values.name }}
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: '-5'
+  labels:
+    gitops/env: {{ .Values.name }}
+spec:
+  description: {{ printf "%s (%s): %s" .Values.name .Values.creator .Values.purpose | quote }}
+  sourceRepos:
+    - {{ .Values.repoURL }}
+    - {{ .Values.chartRepoURL }}
+  destinations:
+    - server: https://kubernetes.default.svc
+      namespace: {{ .Values.name }}-app
+  clusterResourceWhitelist:
+    - group: ''
+      kind: Namespace
+  namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'

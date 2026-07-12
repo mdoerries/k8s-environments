@@ -1,0 +1,38 @@
+{{- $root := . -}}
+{{- $env := .Values.name -}}
+{{- range (include "app-of-apps.components" $root | fromYamlArray) }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ $env }}-{{ .name }}
+  namespace: argocd
+  labels:
+    gitops/env: {{ $env }}
+    gitops/component: {{ .name }}
+  annotations:
+    argocd.argoproj.io/sync-wave: {{ .wave | quote }}
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: env-{{ $env }}
+  sources:
+    - repoURL: {{ $root.Values.chartRepoURL }}
+      chart: {{ .chart }}
+      targetRevision: {{ .version | quote }}
+      helm:
+        releaseName: {{ .name }}
+        valueFiles:
+          - $values/environments/{{ $env }}/components/{{ .name }}.yaml
+        values: |
+          env: {{ $env }}
+          component: {{ .name }}
+    - repoURL: {{ $root.Values.repoURL }}
+      targetRevision: {{ $root.Values.envRevision }}
+      ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: {{ $env }}-app
+  syncPolicy:
+{{ toYaml $root.Values.defaultSyncPolicy | indent 4 }}
+{{- end }}

@@ -1,0 +1,5 @@
+# Wird von der Component-Application gesetzt (app-of-apps Chart).
+env: ''
+
+# Freie Metadaten aus environments/<env>/components/runtime.yaml.
+info: {}

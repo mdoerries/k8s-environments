@@ -1,0 +1,7 @@
+{{- if not .Values.env }}{{ fail "values.env muss gesetzt sein" }}{{- end }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.env }}-app
+  labels:
+    gitops/env: {{ .Values.env }}

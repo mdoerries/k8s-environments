@@ -1,0 +1,38 @@
+# --- Wird aus environments/<env>/env.yaml ueberlagert ---
+name: ''
+creator: ''
+purpose: ''
+envRevision: main
+componentOverrides: []
+
+# --- Zentrale Defaults (TecTeams-Zone) ---
+repoURL: https://github.com/mdoerries/k8s-environments.git
+
+# OCI-Registry, bewusst OHNE oci://-Praefix: genau so erwartet ArgoCD es im
+# Application-Spec und im AppProject sourceRepos. Der Chart-Name (.chart) wird
+# von ArgoCD angehaengt -> ghcr.io/mdoerries/charts/dummy-web.
+chartRepoURL: ghcr.io/mdoerries/charts
+
+defaultSyncPolicy:
+  automated:
+    prune: true
+    selfHeal: true
+
+# Component-Katalog: Default-Versionen fuer alle Umgebungen.
+# Envs ueberschreiben hier nichts direkt, sondern nur per componentOverrides in ihrer env.yaml.
+components:
+  - name: runtime
+    enabled: true
+    chart: dummy-runtime
+    version: 0.1.0
+    wave: 10
+  - name: web-a
+    enabled: true
+    chart: dummy-web
+    version: 0.1.0
+    wave: 20
+  - name: web-b
+    enabled: true
+    chart: dummy-web
+    version: 0.1.0
+    wave: 20

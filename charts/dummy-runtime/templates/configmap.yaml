@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Values.env }}-app
+  labels:
+    gitops/env: {{ .Values.env }}
+data:
+  env: {{ .Values.env | quote }}
+  info: |
+{{ toYaml .Values.info | indent 4 }}

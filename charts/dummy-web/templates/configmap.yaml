@@ -1,0 +1,36 @@
+{{- if not .Values.env }}{{ fail "values.env muss gesetzt sein" }}{{- end }}
+{{- if not .Values.component }}{{ fail "values.component muss gesetzt sein" }}{{- end }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Values.env }}-app
+data:
+  index.html: |
+    <!doctype html>
+    <html lang="de">
+      <head>
+        <meta charset="utf-8" />
+        <title>{{ .Values.page.title }}</title>
+        <style>
+          body { margin: 0; font-family: system-ui, sans-serif; background: #0b1020;
+                 color: {{ .Values.page.color }}; display: grid; place-items: center; height: 100vh; }
+          main { text-align: center; border: 3px dashed {{ .Values.page.color }};
+                 padding: 3rem 4rem; border-radius: 1rem; }
+          h1 { font-size: 3rem; margin: 0 0 1rem; }
+          p { font-size: 1.25rem; opacity: .9; margin: .25rem; }
+          code { background: rgba(255,255,255,.1); padding: .1rem .4rem; border-radius: .25rem; }
+          .badge { display: inline-block; margin-bottom: 1rem; padding: .2rem .8rem; border-radius: 999px;
+                   background: {{ .Values.page.color }}; color: #0b1020; font-weight: 700; }
+        </style>
+      </head>
+      <body>
+        <main>
+          <div class="badge">v2</div>
+          <h1>{{ .Values.page.title }}</h1>
+          <p>{{ .Values.page.text }}</p>
+          <p>env <code>{{ .Values.env }}</code> &middot; component <code>{{ .Values.component }}</code></p>
+          <p>Chart <code>{{ .Chart.Name }} {{ .Chart.Version }}</code></p>
+        </main>
+      </body>
+    </html>
