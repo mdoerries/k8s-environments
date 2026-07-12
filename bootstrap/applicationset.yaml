@@ -12,6 +12,18 @@ spec:
         revision: main
         files:
           - path: 'environments/*/env.yaml'
+      # Post-Selector: filtert die generierten Parameter, BEVOR daraus Applications werden.
+      # Der Controller stringifiziert alle Werte vorher (fmt.Sprintf("%v", v)), das YAML-Boolean
+      # `true` wird also zum String "true" — Anfuehrungszeichen in der env.yaml sind unnoetig.
+      #
+      # Bewusst eine Whitelist (In), keine Blacklist (NotIn): `enabled` ist damit Pflichtfeld.
+      # Ein Tippfehler laesst die Umgebung VERSCHWINDEN statt still weiterlaufen — bei einem
+      # Schalter zum Abschalten ist "bleibt versehentlich an" die gefaehrlichere Fehlerrichtung.
+      selector:
+        matchExpressions:
+          - key: enabled
+            operator: In
+            values: ['true']
   template:
     metadata:
       name: '{{ .name }}'

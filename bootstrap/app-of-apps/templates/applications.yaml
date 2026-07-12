@@ -1,5 +1,6 @@
 {{- $root := . -}}
 {{- $env := .Values.name -}}
+{{- if .Values.enabled }}
 {{- range (include "app-of-apps.components" $root | fromYamlArray) }}
 ---
 apiVersion: argoproj.io/v1alpha1
@@ -35,4 +36,5 @@ spec:
     namespace: {{ $env }}-app
   syncPolicy:
 {{ toYaml $root.Values.defaultSyncPolicy | indent 4 }}
+{{- end }}
 {{- end }}

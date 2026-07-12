@@ -1,5 +1,12 @@
 # --- Wird aus environments/<env>/env.yaml ueberlagert ---
 name: ''
+
+# Fail-closed: ohne ein explizites `enabled: true` aus der env.yaml rendert dieses Chart
+# NICHTS. Das ist die zweite Verteidigungslinie hinter dem Post-Selector im ApplicationSet.
+# Greift der Selector wider Erwarten nicht, laeuft die Umgebung wenigstens leer, statt
+# heimlich weiterzulaufen.
+enabled: false
+
 creator: ''
 purpose: ''
 envRevision: main

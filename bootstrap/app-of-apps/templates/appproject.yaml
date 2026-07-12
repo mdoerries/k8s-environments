@@ -1,4 +1,5 @@
 {{- if not .Values.name }}{{ fail "values.name muss gesetzt sein (kommt aus env.yaml)" }}{{- end }}
+{{- if .Values.enabled }}
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
@@ -22,3 +23,4 @@ spec:
   namespaceResourceWhitelist:
     - group: '*'
       kind: '*'
+{{- end }}
